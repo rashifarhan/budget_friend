@@ -11,8 +11,7 @@ Some of the features of the app include:
 4)Secure Data Storage: With Hive database, the app ensures that users' financial information is safe and secure. The data is encrypted and stored on the device, so users can access it at any time.
 
 5)Customizable Categories: Users can create their own categories for income and expenses, making it easy to track their financial information in a way that makes sense to them.
-
-6)Overall, Personal Money Manager is a simple and user-friendly app that provides a comprehensive solution for managing personal finances. With its easy-to-use interface and powerful database, it's the perfect tool for anyone looking to take control of their finances.
+This is not the complete project.Have to improve more on the UserInterface
 
 
 
