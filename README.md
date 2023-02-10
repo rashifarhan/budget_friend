@@ -11,7 +11,8 @@ Some of the features of the app include:
 4)Secure Data Storage: With Hive database, the app ensures that users' financial information is safe and secure. The data is encrypted and stored on the device, so users can access it at any time.
 
 5)Customizable Categories: Users can create their own categories for income and expenses, making it easy to track their financial information in a way that makes sense to them.
-This is not the complete project.Have to improve more on the UserInterface
+
+This is not the complete project.Have to add more functionality and more improvement on the user interface
 
 
 
