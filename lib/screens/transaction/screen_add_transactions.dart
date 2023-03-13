@@ -31,98 +31,101 @@ class _ScreenAddTransactionsState extends State<ScreenAddTransactions> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).primaryColorLight,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TextFormField(
-                controller: _purposeTextEditingController,
-                keyboardType: TextInputType.text,
-                decoration: InputDecoration(hintText: "Purpose"),
-              ),
-              TextFormField(
-                controller: _amountTextEditingController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(hintText: "Amount"),
-              ),
-              TextButton.icon(
-                  onPressed: () async {
-                    final _selectedDateTemp = await showDatePicker(
-                        context: context,
-                        initialDate: DateTime.now(),
-                        firstDate: DateTime.now().subtract(Duration(days: 30)),
-                        lastDate: DateTime.now());
-                    if (_selectedDateTemp == null) {
-                      return;
-                    } else {
-                      print(_selectedDateTemp.toString());
-                      setState(() {
-                        _selectedDate = _selectedDateTemp;
-                      });
-                    }
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TextFormField(
+                  controller: _purposeTextEditingController,
+                  keyboardType: TextInputType.text,
+                  decoration: InputDecoration(hintText: "Purpose"),
+                ),
+                TextFormField(
+                  controller: _amountTextEditingController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(hintText: "Amount"),
+                ),
+                TextButton.icon(
+                    onPressed: () async {
+                      final _selectedDateTemp = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime.now().subtract(Duration(days: 30)),
+                          lastDate: DateTime.now());
+                      if (_selectedDateTemp == null) {
+                        return;
+                      } else {
+                        print(_selectedDateTemp.toString());
+                        setState(() {
+                          _selectedDate = _selectedDateTemp;
+                        });
+                      }
+                    },
+                    icon: Icon(Icons.calendar_today),
+                    label: Text(_selectedDate == null
+                        ? "Select Date"
+                        : _selectedDate.toString())),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Radio(
+                      value: CategoryType.income,
+                      groupValue: _selectedCategoryType,
+                      onChanged: (newValue) {
+                        setState(() {
+                          _selectedCategoryType = newValue;
+                          _dropdownValue = null;
+                        });
+                      },
+                    ),
+                    Text("Income"),
+                    Radio(
+                      value: CategoryType.expense,
+                      groupValue: _selectedCategoryType,
+                      onChanged: (newValue) {
+                        setState(() {
+                          _selectedCategoryType = newValue;
+                          _dropdownValue = null;
+                        });
+                      },
+                    ),
+                    Text("Expense")
+                  ],
+                ),
+                DropdownButton(
+                  hint: Text("Select Category"),
+                  value: _dropdownValue,
+                  items: (_selectedCategoryType == CategoryType.income
+                          ? CategoryDB.instance.incomeCategoryListListner
+                          : CategoryDB.instance.expenseCategoryListListner)
+                      .value
+                      .map((e) {
+                    return DropdownMenuItem(
+                      value: e.id,
+                      child: Text(e.name),
+                      onTap: () {
+                        _selectedCategoryModel = e;
+                      },
+                    );
+                  }).toList(),
+                  onChanged: (selectedValue) {
+                    setState(() {
+                      _dropdownValue = selectedValue;
+                    });
                   },
-                  icon: Icon(Icons.calendar_today),
-                  label: Text(_selectedDate == null
-                      ? "Select Date"
-                      : _selectedDate.toString())),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Radio(
-                    value: CategoryType.income,
-                    groupValue: _selectedCategoryType,
-                    onChanged: (newValue) {
-                      setState(() {
-                        _selectedCategoryType = newValue;
-                        _dropdownValue = null;
-                      });
-                    },
-                  ),
-                  Text("Income"),
-                  Radio(
-                    value: CategoryType.expense,
-                    groupValue: _selectedCategoryType,
-                    onChanged: (newValue) {
-                      setState(() {
-                        _selectedCategoryType = newValue;
-                        _dropdownValue = null;
-                      });
-                    },
-                  ),
-                  Text("Expense")
-                ],
-              ),
-              DropdownButton(
-                hint: Text("Select Category"),
-                value: _dropdownValue,
-                items: (_selectedCategoryType == CategoryType.income
-                        ? CategoryDB.instance.incomeCategoryListListner
-                        : CategoryDB.instance.expenseCategoryListListner)
-                    .value
-                    .map((e) {
-                  return DropdownMenuItem(
-                    value: e.id,
-                    child: Text(e.name),
-                    onTap: () {
-                      _selectedCategoryModel = e;
-                    },
-                  );
-                }).toList(),
-                onChanged: (selectedValue) {
-                  setState(() {
-                    _dropdownValue = selectedValue;
-                  });
-                },
-              ),
-              ElevatedButton(
-                  onPressed: () {
-                    addTransaction();
+                ),
+                ElevatedButton(
+                    onPressed: () {
+                      addTransaction();
 
-                  },
-                  child: Text("Submit"))
-            ],
+                    },
+                    child: Text("Submit"))
+              ],
+            ),
           ),
         ),
       ),
@@ -156,8 +159,9 @@ class _ScreenAddTransactionsState extends State<ScreenAddTransactions> {
         amount: _parsedAmount,
         type: _selectedCategoryType!,
         category: _selectedCategoryModel!);
+
     await TransactionDB.instancs.addTransaction(_model);
     Navigator.pop(context);
-    TransactionDB.instancs.refresh();
+
   }
 }

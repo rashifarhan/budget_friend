@@ -17,12 +17,17 @@ class _ScreenCategoryState extends State<ScreenCategory> {
   }
   @override
   Widget build(BuildContext context) {
+
     return DefaultTabController(
+
+
       length: 2,
       child: Column(
+
          children: [
            TabBar(
-             labelColor: Colors.black,
+
+             labelColor: Theme.of(context).primaryColorDark,
                unselectedLabelColor: Colors.grey[600],
                tabs: [
              Tab(text: 'INCOME',),

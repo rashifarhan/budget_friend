@@ -1,49 +1,98 @@
+
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:personal_money_manager/db/transaction/transaction_db.dart';
-
+import 'package:personal_money_manager/models/transactions/transaction_model.dart';
+import 'package:personal_money_manager/screens/transaction/transaction_list_widget.dart';
 import '../../db/category/category_db.dart';
-import '../../models/category/category_model.dart';
-import 'package:intl/intl.dart';
-
-class ScreenTransaction extends StatelessWidget {
-  const ScreenTransaction({super.key});
+import 'chart.dart';
+class ScreenTransaction extends StatefulWidget {
 
 
+
+   ScreenTransaction( {super.key,});
+
+  @override
+  State<ScreenTransaction> createState() => _ScreenTransactionState();
+}
+
+class _ScreenTransactionState extends State<ScreenTransaction> {
+
+  bool _showChart = false;
 
   @override
   Widget build(BuildContext context) {
-
+    final mediaQuery = MediaQuery.of(context);
+    final isLandscape = mediaQuery.orientation == Orientation.landscape;
     TransactionDB.instancs.refresh();
     CategoryDB.instance.refreshUI();
-    return ValueListenableBuilder(valueListenable: TransactionDB.instancs.transactionListNotifier, builder: (BuildContext context, value, Widget? _) {
-      return ListView.separated(
-
-          padding: EdgeInsets.all(10),
-          itemBuilder: (context, index) {
-            final transaction=value[index];
-            return Card(
-              elevation: 0,
-              child: ListTile(
-                leading: CircleAvatar(
-                  backgroundColor: transaction.type==CategoryType.income?Colors.green:Colors.red,
-
-                    radius: 55,
-                    child: Text(parseDate(transaction.date))),
-                title: Text("\$${transaction.amount}"),
-                subtitle: Text(transaction.category.name),
-
-              ),
-            );
+    final transactionList=Container(
+      height: mediaQuery.size.height*0.7,
+      child: TransactionListWidget(),
+    );
+    final pageBody= SingleChildScrollView(
+      child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+          if (isLandscape)
+      Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text("Show Chart"),
+        Switch.adaptive(
+          value: _showChart,
+          onChanged: (val) {
+            setState(() {
+              _showChart = val;
+            });
           },
-          separatorBuilder: (context, index) => SizedBox(
-            height: 10,
-          ),
-          itemCount: value.length);
-    },);
-  }
-  String parseDate(DateTime date){
-    final _date=DateFormat.MMMd().format(date);
-    return _date;
-    //return '${date.day}\n${date.month}';
+        ),
+      ],
+    ),
+    if (!isLandscape)
+        ValueListenableBuilder<List<TransactionModel>>(
+    valueListenable: TransactionDB.instancs.transactionListNotifier,
+    builder: (context, transactionList, _) {
+// Create a list of recent transactions that is no more than 7 days old
+    final List<TransactionModel> recentTransactions = transactionList.where((transaction) {
+    final DateTime now = DateTime.now();
+    final DateTime transactionDate = DateTime.parse(transaction.date.toString());
+    final Duration difference = now.difference(transactionDate);
+    return difference.inDays < 7;
+    }).toList();
+
+// Build the chart
+    return Container(
+    height: mediaQuery.size.height*0.21,
+    child: Chart(recentTransactions: recentTransactions));
+    },
+    ),
+    if (!isLandscape) transactionList,
+    if (isLandscape)
+    _showChart?  ValueListenableBuilder<List<TransactionModel>>(
+    valueListenable: TransactionDB.instancs.transactionListNotifier,
+    builder: (context, transactionList, _) {
+// Create a list of recent transactions that is no more than 7 days old
+    final List<TransactionModel> recentTransactions = transactionList.where((transaction) {
+    final DateTime now = DateTime.now();
+    final DateTime transactionDate = DateTime.parse(transaction.date.toString());
+    final Duration difference = now.difference(transactionDate);
+    return difference.inDays < 7;
+    }).toList();
+
+// Build the chart
+    return Container(
+    height: mediaQuery.size.height*0.6,
+    child: Chart(recentTransactions: recentTransactions));
+    },
+    ):transactionList,
+    ]
+      ));
+    return Scaffold(
+        backgroundColor: Theme.of(context).primaryColorLight,
+        body: pageBody);
+
+
   }
 }

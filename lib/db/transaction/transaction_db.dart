@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:personal_money_manager/models/transactions/transaction_model.dart';
 
-import '../../models/category/category_model.dart';
+
 
 const TRANSACTION_DB_NAME="transaction_db";
 
@@ -10,6 +10,7 @@ const TRANSACTION_DB_NAME="transaction_db";
 abstract class TransactionDbFunctions{
   Future<void> addTransaction(TransactionModel obj);
   Future<List<TransactionModel>> getTransactions();
+  Future<void> deleteCategory(String transactionID);
 }
 class TransactionDB implements TransactionDbFunctions{
   TransactionDB._internal();
@@ -24,6 +25,7 @@ class TransactionDB implements TransactionDbFunctions{
   Future<void> addTransaction(TransactionModel obj) async {
     final _transactionDB= await Hive.openBox<TransactionModel>(TRANSACTION_DB_NAME);
     await _transactionDB.put(obj.id,obj);
+    await refresh();
 
   }
   Future<void> refresh()async{
@@ -32,6 +34,7 @@ class TransactionDB implements TransactionDbFunctions{
     transactionListNotifier.value.clear();
     transactionListNotifier.value.addAll(_list);
     transactionListNotifier.notifyListeners();
+
   }
 
   @override
@@ -39,6 +42,13 @@ class TransactionDB implements TransactionDbFunctions{
     final _transactionDB= await Hive.openBox<TransactionModel>(TRANSACTION_DB_NAME);
     return _transactionDB.values .toList();
 
+  }
+
+  @override
+  Future<void> deleteCategory(String transactionID) async {
+    final _transactionDB= await Hive.openBox<TransactionModel>(TRANSACTION_DB_NAME);
+    await _transactionDB.delete(transactionID);
+     return await refresh();
   }
   
 }

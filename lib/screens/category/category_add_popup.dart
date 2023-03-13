@@ -12,6 +12,7 @@ Future<void> showCategoryAddPopup(BuildContext context) async {
     context: context,
     builder: (context) {
       return SimpleDialog(
+        backgroundColor: Theme.of(context).primaryColorLight,
         title: Text('Add Category'),
         children: [
           Padding(
