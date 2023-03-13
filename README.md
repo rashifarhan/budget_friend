@@ -1,16 +1,22 @@
 # personal_money_manager
+Personal Money Manager is a Flutter project that helps individuals manage their finances effectively. This app leverages the power of Hive database, a fast and efficient NoSQL database that allows for easy storage and retrieval of financial information. With Personal Money Manager, users can keep track of their income, expenses, and budgets, all in one place.
+Some of the features of the app include:
 
-A new Flutter project.
+1)Income and Expense Tracking: Users can input their income and expenses and categorize them for better tracking and analysis.
 
-## Getting Started
+2)Budget Management: The app provides an easy way to set and track budgets for various categories of expenses, such as food, entertainment, and housing.
 
-This project is a starting point for a Flutter application.
+3)Reports: Personal Money Manager generates reports that provide insights into the user's financial situation. This helps users make informed decisions about their finances.
 
-A few resources to get you started if this is your first Flutter project:
+4)Secure Data Storage: With Hive database, the app ensures that users' financial information is safe and secure. The data is encrypted and stored on the device, so users can access it at any time.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+5)Customizable Categories: Users can create their own categories for income and expenses, making it easy to track their financial information in a way that makes sense to them.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+This is not the complete project.Have to add more functionality and more improvement on the user interface
+
+
+
+
+
+
+
